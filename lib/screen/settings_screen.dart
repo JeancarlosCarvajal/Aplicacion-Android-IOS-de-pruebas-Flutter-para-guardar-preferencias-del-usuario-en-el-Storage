@@ -1,13 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:preferences_app/share_preferences/preferences.dart';
 import 'package:preferences_app/widgets/widgets.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
 
   //establecer el nombre de la ruta de este screen
   static const String routeName = 'Settings';
    
   const SettingsScreen({Key? key}) : super(key: key);
-  
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+
+  // bool isDarkMode = false;
+  // int gender = 1;
+  // String name = 'Jean';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,35 +36,46 @@ class SettingsScreen extends StatelessWidget {
               const Divider(),
               // adaptativo para que se vea bien en el sistema operativo que se esta utilizando
               SwitchListTile.adaptive(
-                value: true, // mueve el boton en on off
+                value: Preferences.isDarkMode, // mueve el boton en on off
                 title: const Text('DarkMode'),
                 onChanged: ( value ){
-                  
+                  Preferences.isDarkMode = value;
+                  print('Valor del DarkMode: ${Preferences.isDarkMode}');
+                  // redibuja el statefulwidget
+                  setState(() {});
                 }
               ),
               const Divider(), // linea delgada divisoria
               // especificar el tipo de valor ya que es dinamico, este es entero
               RadioListTile<int>(
                 value: 1, 
-                groupValue: 1, // es lo que cambia realmente 
+                groupValue: Preferences.gender, // es lo que cambia realmente, es parecido al name en los input radio de html, el nuemro aqui me dice cual esta activado
                 title: const Text('Masculino'),
                 onChanged: ( value ){
-
+                  Preferences.gender = value ?? 1;
+                  // redibuja el statefulwidget
+                  setState(() {}); 
                 }
               ),
               RadioListTile<int>(
                 value: 2, 
-                groupValue: 1, // es lo que cambia realmente 
+                groupValue: Preferences.gender, // es lo que cambia realmente 
                 title: const Text('Femenino'),
                 onChanged: ( value ){
-
+                  Preferences.gender = value ?? 2;
+                  // redibuja el statefulwidget
+                  setState(() {}); 
                 }
               ),
               const Divider(),
               Padding(
                 padding: const EdgeInsets.symmetric( horizontal: 20 ),
                 child: TextFormField(
-                  initialValue: 'Jeancarlos', // esto es como un placeholder
+                  initialValue: Preferences.name, // esto es como un placeholder
+                  onChanged: (value){
+                    Preferences.name = value; // el value es el texto que esta ingresando
+                    setState(() { });
+                  },
                   decoration: const InputDecoration(
                     labelText: 'Nombre',
                     helperText: 'Nombre del usuario'
