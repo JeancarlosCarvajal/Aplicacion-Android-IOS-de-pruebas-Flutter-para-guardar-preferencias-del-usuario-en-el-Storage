@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:preferences_app/providers/theme_provider.dart';
 import 'package:preferences_app/screen/screens.dart';
 import 'package:preferences_app/share_preferences/preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() async{ // asyncrono para poder leer las preferencias de ususario
     // para poder usar el await evita error de flutter
@@ -8,7 +10,20 @@ void main() async{ // asyncrono para poder leer las preferencias de ususario
     // leyendo las preferencias de ususaario en todo el proyecto entero
     await Preferences.init();
 
-    runApp(const MyApp());
+    runApp(
+      
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            // ThemeProvider le introducimos los valores al Provider para que haga el cambio de estado segun las preferencias
+            create:(_) => ThemeProvider(isDarkMode: Preferences.isDarkMode)
+          )
+        ],
+        child: const MyApp(),
+      )
+      
+    );
+
   }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +39,7 @@ class MyApp extends StatelessWidget {
         HomeScreen.routeName    : (_) => const HomeScreen(),
         SettingsScreen.routeName: (_) => const SettingsScreen(),
       },
-      theme: ThemeData.dark(),
+      theme: Provider.of<ThemeProvider>(context).currentTheme, // en settings_screen es donde se hace el cambio e estado
     );
   }
 }
